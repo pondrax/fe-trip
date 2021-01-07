@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="{{ APP_DESC }}">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Travel Passport</title>
+	<link href="assets/css/lib/drax.css" rel="stylesheet">
+	<link href="assets/css/lib/feather.css" rel="stylesheet">
+	<link href="assets/css/lib/animate.min.css" rel="stylesheet">
+	<link href="assets/css/app.css" rel="stylesheet">
+	<script src="assets/js/app/helper.js"></script>
+	<script src="assets/js/lib/vue.global.prod.js"></script>
+	<!-- <script src="@asset('js/lib/vue.global.js')"></script> -->
+</head>
+<body>
+
+
+		<style>
+	.headline{
+		background:url(https://localhost/trips/public/assets//img/cloud.png) no-repeat 2em 2em;
+		height:100vh;
+	}
+	#intro{
+		background:#fff url(https://localhost/trips/public/assets//img/plane2.png) no-repeat;
+	}
+	#statistik{
+		margin-top:-5em;
+	}
+	.plane{
+		position:absolute;
+		width:15em;
+		top:-6em;
+		right:-1em;
+		z-index:-1;
+	}
+	.rounded-lg{
+		border-radius:3em;
+	}
+	.navbar.active{
+		background:#b1bff9;
+	}
+	.navbar a.button{
+		margin-right:0;
+	}
+	.button.outline {
+	color:inherit;
+	border-width:.15em;
+    box-shadow: inset 0 0 0 99em hsla(0,0%,100%,.3);
+    border-color: rgba(0,0,0,.15);
+	}
+	.grid-lg{
+		max-width:1200px;
+		margin:0 auto;
+	}
+	.grid-md{
+		max-width:768px;
+		margin:0 auto;
+	}
+	.shadow-lg{
+		box-shadow:0 0 20px #eee;
+	}
+	</style>
+	<!-- [APP] Start -->
+	<div id="APP">
+		<app-loader ref="LOADER"></app-loader>
+		
+		<section id="home" class="grid-lg py-2 px-4">
+			<header class="navbar rounded-lg px-3">
+				<div class="pt-1">
+					<img src="./assets/img/logo.png" class="white circle" style="width:3em">
+				</div>
+				<div>
+				</div>
+				<div class="px-3">
+					<a href="#home" class="button text-secondary transparent rounded-lg">Beranda</a>
+					<a href="#manfaat" class="button text-secondary transparent rounded-lg">Manfaat</a>
+					<a href="#alur" class="button text-secondary transparent rounded-lg">Cara Kerja</a>
+					<a href="./register.html" class="hvr-float-shadow button info rounded-lg mr-1">Daftar</a>
+					<a href="./login.html" class="hvr-float-shadow button secondary rounded-lg">Masuk</a>
+				</div>
+			</header>
+		</section>
+		
+		<section class="grid-lg headline column two center p-4">
+			<div class="row one three-md center">
+				<div class="relative my-5 py-5 md-2" style="z-index:0">
+					<img class="plane hvr-hang" src="./assets/img/plane.png">
+					<div class="p-5 secondary text-center text-white rounded-lg">
+						<h1 class="display-2">JATIM TRAVEL PASSPORT</h1>
+					</div>
+					<div class="hvr-hang animate-hover w-100 mt-3 p-1 silver text-center text-secondary rounded-lg">
+						<i class="feather-map-pin left h4 px-1"></i>
+						<p class="large">
+							Travelling Aman dan Bebas COVID-19
+						</p>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<section id="intro" class="shadow-lg rounded-lg p-5">
+			<div class="grid-md">
+				<h2 class="text-center">
+					<span class="text-info">&mdash;</span>
+					Latar Belakang
+					<span class="text-info">&mdash;</span>
+				</h2>
+				<p class="text-center">Problem yang dihadapi dimasa pandemi ini</p>
+				<br>
+				<div class="row gap one two-md">
+					<div class="p-3">
+						<div class="w-100 hvr-shutter-out-horizontal p-3 text-center rounded shadow-lg">
+							<h1 class="display-2 p-0">01</h1>
+							<p>Kebutuhan Travelling Naik, namun rasa aman harus terus dijaga di era pandemi COVID-10</p>
+						</div>
+					</div>
+					<div class="p-3">
+						<div class="w-100 hvr-shutter-out-horizontal p-3 text-center rounded shadow-lg">
+							<h1 class="display-2 p-0">02</h1>
+							<p>Beberapa Destinasi Wisata Mewajibkan ada bukti test COVID-19 namun tidak ada validasinya</p>
+						</div>
+					</div>
+					<div class="p-3">
+						<div class="w-100 hvr-shutter-out-horizontal p-3 text-center rounded shadow-lg">
+							<h1 class="display-2 p-0">03</h1>
+							<p>Validasi manual oleh manusia akan berjalan lambat</p>
+						</div>
+					</div>
+					<div class="p-3">
+						<div class="w-100 hvr-shutter-out-horizontal p-3 text-center rounded shadow-lg">
+							<h1 class="display-2 p-0">04</h1>
+							<p>Branding wisata bebas COVID-19 dibutuhkan untuk menjaga industri wisata</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="m-5 p-5"></div>
+		</section>
+		
+		<section id="statistik" class="grid-lg info rounded-lg shadow p-5">			
+				<h2 class="text-center text-white">
+					&mdash;
+					Statistik Data
+					&mdash;
+				</h2>
+				<br>
+				<div class="row gap one three-md px-5">
+					<div class="p-3">
+						<div class="white rounded-lg p-5">
+							<h1 class="display-2 p-0">38</h1>
+							<p class="large">Kabupaten/Kota</p>
+						</div>
+					</div>
+					<div class="p-3">
+						<div class="white rounded-lg p-5">
+							<h1 class="display-2 p-0">300</h1>
+							<p class="large">Tempat Wisata</p>
+						</div>
+					</div>
+					<div class="p-3">
+						<div class="white rounded-lg p-5">
+							<h1 class="display-2 p-0">12345</h1>
+							<p class="large">Kunjungan</p>
+						</div>
+					</div>
+				</div>
+		</section>
+		<br>
+		<br>
+		
+	</div>
+	<!-- [APP] End -->
+	
+	<script>
+		/* [APP] Root */
+		const app = Vue.createApp({
+			data(){
+				return {
+					
+				}
+			},
+			mounted(){
+				document.body.addEventListener('scroll',this.scrolling);
+			},
+			created(){
+				document.body.removeEventListener('scroll',this.scrolling);
+			},
+			methods:{
+				scrolling(ev){
+					console.log(ev);
+				}
+			}
+		});
+	</script>
+	
+	<!-- [SCRIPT] Start -->
+	<div id="app-script">
+		<script src="assets/js/config.js"></script>
+		<script src="assets/js/app/base.js"></script>
+		<script src="assets/js/app/form.js"></script>
+		<script src="assets/js/app/table.js"></script>
+		<script src="assets/js/app/app.js"></script>
+	</div>
+</body>
+</html>

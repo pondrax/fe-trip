@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="{{ APP_DESC }}">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Travel Passport</title>
+	<link href="assets/css/lib/drax.css" rel="stylesheet">
+	<link href="assets/css/lib/feather.css" rel="stylesheet">
+	<link href="assets/css/lib/animate.min.css" rel="stylesheet">
+	<link href="assets/css/app.css" rel="stylesheet">
+	<script src="assets/js/app/helper.js"></script>
+	<script src="assets/js/lib/vue.global.prod.js"></script>
+	<!-- <script src="@asset('js/lib/vue.global.js')"></script> -->
+</head>
+<body>
+
+	<!-- [APP] Start -->
+	<div id="APP" class="p-4">
+		<app-loader ref="LOADER"></app-loader>
+		
+		<h1>Home</h1>
+		
+	</div>
+	<!-- [APP] End -->
+	
+	<script>
+		/* [APP] Root */
+		const app = Vue.createApp({
+			data(){
+				return {
+					LOGIN:{
+						show:1,
+						form:{}
+					}
+				}
+			},
+			methods:{
+			}
+		});
+		const LOGGED = true;
+	</script>
+	
+	<!-- [SCRIPT] Start -->
+	<div id="app-script">
+		<script src="assets/js/config.js"></script>
+		<script src="assets/js/app/base.js"></script>
+		<script src="assets/js/app/form.js"></script>
+		<script src="assets/js/app/table.js"></script>
+		<script src="assets/js/app/app.js"></script>
+	</div>
+</body>
+</html>

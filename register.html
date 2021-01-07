@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="{{ APP_DESC }}">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Travel Passport</title>
+	<link href="assets/css/lib/drax.css" rel="stylesheet">
+	<link href="assets/css/lib/feather.css" rel="stylesheet">
+	<link href="assets/css/lib/animate.min.css" rel="stylesheet">
+	<link href="assets/css/app.css" rel="stylesheet">
+	<script src="assets/js/app/helper.js"></script>
+	<script src="assets/js/lib/vue.global.prod.js"></script>
+	<!-- <script src="@asset('js/lib/vue.global.js')"></script> -->
+</head>
+<body>
+
+	<!-- [APP] Start -->
+	<div id="APP" class="p-4">
+		<app-loader ref="LOADER"></app-loader>
+		
+		<div class="column two center px-5 mx-md-5" style="min-height:80vh">
+			<div class="white shadow">
+				<div class="row one two-md center p-3 m-0 mx-sm-3 mx-md-5">
+					<div class="column two center">
+						<img src="assets/img/logo.png" style="max-width:15em;margin:auto;object-fit:contain" alt="logo">
+					</div>
+					<div class="column two center">
+                        <div class="p-lg-4">
+                            <h4 class="text-center mt-lg-4">
+                                <span class="text-blue">Welcome</span>
+                                to <span class="text-red">Travel Passport</span>
+                            </h4>
+                            <p class="text-secondary large">Daftar akun</p>
+                            <!-- Start App Form -->
+                            <app-form :url="$apiurl + 'api/register'" 
+                                v-model:data="REGISTER" 
+                                :toggle="false"
+                                :success="success"
+                                class="p-0" >
+                                <template #default="{form, error}">
+                                    <div class="row gap one">
+                                        <v-text
+                                            v-model="form.email"
+                                            :error="error.email"
+                                            placeholder="Email"
+                                            ></v-text>
+                                            
+                                        <v-password
+                                            v-model="form.password"
+                                            :error="error.password"
+                                            placeholder="Password"
+                                            ></v-password>
+                                                            
+                                    </div>
+                                    <div class="">
+                                        <button class="info w-100">Daftar</button>
+                                    </div>
+                                    <hr>
+                                    <div class="">
+                                        <a href="./" class="button text-black transparent border mr-1" >Kembali ke halaman awal</a>
+                                        <a href="./login.html" class="button text-black transparent border" >Login</a>
+                                    </div>
+                                </template>
+                            </app-form>
+                            <!-- End App Form -->
+						
+                        </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- [APP] End -->
+	
+	<script>
+		/* [APP] Root */
+		const app = Vue.createApp({
+			data(){
+				return {
+					REGISTER:{
+						show:1,
+						form:{}
+					}
+				}
+			},
+			methods:{
+				success(response){	
+					setTimeout(()=>location.href = config.$baseurl + 'home.html', 3000);	
+					this.$refs.LOADER.add(`
+						<h5>${response.message}</h5>
+						Memuat ulang halaman...
+					`,'success',-1).clear(3000);
+				}
+			}
+		});
+	</script>
+	
+	<!-- [SCRIPT] Start -->
+	<div id="app-script">
+		<script src="assets/js/config.js"></script>
+		<script src="assets/js/app/base.js"></script>
+		<script src="assets/js/app/form.js"></script>
+		<script src="assets/js/app/table.js"></script>
+		<script src="assets/js/app/app.js"></script>
+	</div>
+</body>
+</html>

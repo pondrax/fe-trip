@@ -15,12 +15,102 @@
 	<!-- <script src="@asset('js/lib/vue.global.js')"></script> -->
 </head>
 <body>
-
+	<style>
+	.grid-md{max-width:1000px;margin:0 auto;}
+	.grid-sm{max-width:400px;margin:0 auto}
+	</style>
 	<!-- [APP] Start -->
 	<div id="APP" class="p-4">
 		<app-loader ref="LOADER"></app-loader>
 		
-		<h1>Home</h1>
+		<section id="intro" class="shadow-lg rounded-lg p-5">
+			<div class="grid-md">
+				<h2 class="text-left">
+					Home
+					<span class="text-info">&mdash;</span>
+				</h2>
+				<p class="">
+					Selamat datang pengunjung
+				</p>
+				<p class="none">
+					<span>Isi data diri anda terlebih dahulu</span>
+					<span>Lengkapi data kesehatan anda</span>
+					<span>Perbarui data kesehatan</span>
+				</p>
+				<div class="row gap one two-sm three-md four-lg">
+					<div>
+						<button class="info extra-large">
+							<i class="feather-maximize mr-1"></i> 
+							<small class="pt-1">Bagikan Kode</small>
+						</button>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<section id="passport" class="shadow-lg rounded-lg p-5">
+			<div class="grid-md">
+				<h2 class="text-left">
+					Daftar Passport
+					<span class="text-info">&mdash;</span>
+				</h2>
+				<p class="mb-3">Identitas dan status kolega anda</p>
+				<div class="row gap one two-md three-xl">
+					<div class="px-2">
+						<button class="muted tile w-100 rounded m-0" @click="open('FORMPASSPORT')">
+							<div class="extra-large p-4">
+								<i class="feather-plus mr-1"></i> 
+								<small class="pt-1">Tambahkan baru</small>
+							</div>
+						</button>
+					</div>
+					<div v-for="pass in PASSPORT.detail" class="px-2">
+						<card-passport :passport="pass"></card-passport>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<section id="travel" class="shadow-lg rounded-lg p-5">
+			<div class="grid-md">
+				<h2 class="text-left">
+					Riwayat Kunjungan
+					<span class="text-info">&mdash;</span>
+				</h2>
+				<p class="mb-3">Riwayat kunjungan terbaru</p>
+				<div class="row gap one two-sm three-xl">
+					<div v-for="kunjungan in KUNJUNGAN.detail" class="px-2">
+						<card-kunjungan :kunjungan="kunjungan"></card-kunjungan>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<app-modal v-model:data="FORMPASSPORT" :url="$apiurl">
+			<template #default="{form, error, reset}">
+			
+				<h4><i class="feather-user"></i> Passport Baru</h4>
+				<div class="grid-sm m-0">
+					<div class="row gap one">													
+						<v-text v-model="form.nik" placeholder="NIK"></v-text>
+						
+						<v-text v-model="form.nama" placeholder="Nama"></v-text>
+						
+						<v-date v-model="form.lahir" placeholder="Tanggal Lahir"></v-date>
+						
+						<v-text v-model="form.alamat" placeholder="Alamat Domisili"></v-text>
+						
+						<v-text v-model="form.telp" placeholder="Telepon"></v-text>
+						
+						<v-select v-model="form.kelamin" :options="['Laki-laki','Perempuan']" placeholder="Jenis Kelamin"></v-select>
+						
+					</div>
+				</div>
+				<div class="">
+					<button type="button" class="secondary">Selanjutnya</button>
+				</div>
+			</template>
+		</app-modal>
 		
 	</div>
 	<!-- [APP] End -->
@@ -30,16 +120,190 @@
 		const app = Vue.createApp({
 			data(){
 				return {
-					LOGIN:{
-						show:1,
-						form:{}
+					FORMPASSPORT:{},
+					PASSPORT:{
+						detail:[
+							{idpassport:1,nama:'Nama lengkap anda',alamat:'Sidowungu, Menganti, Gresik',status:'Valid',keterangan:'Aktif hingga 10 Jan',tanggalexpired:'13 Januari 2021'},
+							{idpassport:2,nama:'Nama Istri anda',alamat:'Sidowungu, Menganti, Gresik',status:'Tidak Valid',keterangan:'Tanggal sudah expired',tanggalexpired:'13 Januari 2021'},
+							{idpassport:3,nama:'Anak ke 1 ',alamat:'Sidowungu, Menganti, Gresik',status:'Proses Validasi',keterangan:'Harap menunggu sedang divalidasi',tanggalexpired:'13 Januari 2021'},
+							{idpassport:4,nama:'Anak ke 2',alamat:'Sidowungu, Menganti, Gresik',status:null,keterangan:null,tanggalexpired:'13 Januari 2021'},
+						]
+					},
+					KUNJUNGAN:{
+						detail:[
+							{wisata:'Selecta',alamatdtw:'batu',telpdtw:'12346789',fotodtw:'http://placeimg.com/640/360/any',lat:'',lon:'',tanggal:'8 Jan 2021',jumlah:2},
+							{wisata:'Jatim Park 3',alamatdtw:'batu',telpdtw:'12346789',fotodtw:'http://placeimg.com/640/360/any2',lat:'',lon:'',tanggal:'9 Jan 2021',jumlah:1},
+						]
 					}
 				}
 			},
+			mounted(){
+				this.fetchPassport();
+				this.fetchKunjungan();
+			},
 			methods:{
+				fetchPassport(){
+					
+				},
+				fetchKunjungan(){
+					
+				}
 			}
 		});
 		const LOGGED = true;
+		
+		app.component('card-passport',{
+			props:['passport'],
+			data(){
+				return {
+					DETAIL:{},
+					FORM:{},
+					DELETE:{},
+					detailKesehatan:[
+						{no:1,faskes:'Sememi',dokter:'Budiono',jenistes:'Rapid Antigen',tanggaltes:'10 Januari 2021',tanggalexpired:'13 Januari 2021',status:'Valid',keterangan:'-'},
+						{no:1,faskes:'Sememi',dokter:'Budiono',jenistes:'Rapid Antigen',tanggaltes:'10 Januari 2021',tanggalexpired:'13 Januari 2021',status:'Tidak Valid',keterangan:'-'},
+						{no:1,faskes:'Sememi',dokter:'Budiono',jenistes:'Rapid Antigen',tanggaltes:'10 Januari 2021',tanggalexpired:'13 Januari 2021',status:'valid',keterangan:'-'},
+					]
+				}
+			},
+			methods:{
+				fetchDetailKesehatan(passport){
+					this.open('DETAIL',passport);
+					console.log('detail kesehatan',passport.idpassport);
+					//http.post(this.apiurl+'api/getDetailKesehatan/',{})
+				}
+			},
+			computed:{
+				statusClass(){
+					return this.passport.status=='Valid'?'success':this.passport.status=='Proses Validasi'?'muted':'error';
+				}
+			},
+			template:`
+				<div class="button tile w-100 white text-black text-left m-0 p-0 shadow rounded">
+					<div class="p-1 large">
+						<div :class="'text-'+statusClass">
+							<i class="feather-shield display-1"></i>
+						</div>
+					</div>
+					<div>
+						<div class="right group dropdown dropdown-right"> 
+							<a class="button transparent text-black" data-dropdown="" tabindex="0">
+								<i class="feather-more-horizontal"></i>
+							</a>
+							<ul class="menu"> 
+								<li class="menu-item">
+									<a @click.prevent="fetchDetailKesehatan(passport)">Detail</a>
+								</li> 
+								<li class="menu-item">
+									<a @click="open('FORM',passport)">Ubah</a>
+								</li> 
+								<li class="menu-item">
+									<a @click="open('DELETE',Object.assign(passport,{id:passport.idpassport}))">Hapus</a>
+								</li> 
+							</ul> 
+						</div>
+						<div class="small" style="padding:.4em">
+							<p>
+								<b class="large mr-1">{{passport.nama}}</b>
+								
+								<button v-if="passport.status!='Valid'" class="label warning">Update</button>
+								<button v-else class="label info" @click="fetchDetailKesehatan(passport)">Lihat detail</button>
+							</p>
+							<p class="m-0">Alamat : {{passport.alamat}}</p>
+							<p class="m-0">Status : {{passport.status||'-'}}</p>
+							<p class="m-0">Expired : {{passport.tanggalexpired||'-'}}</p>
+							<p  class="m-0">Keterangan : {{passport.keterangan||'Belum diupload'}}</p>
+						</div>
+					</div>
+				</div>
+				
+				<!-- [App Modal] Start -->
+				<app-modal v-model:data="DETAIL">
+					<template #default="{form, error, reset}">
+						<h4><i class="feather-user"></i> Detail Passport</h4>
+						<div class="">
+							<p>Nama : <b>{{form.nama}}</b> </p>
+							<p class="m-0">Alamat : <b>{{form.alamat}}</b> </p>
+							<p class="m-0">Status : <b>{{form.status}}</b> </p>
+							<p class="m-0">Keterangan : <b>{{form.keterangan}}</b> </p>
+						</div>
+						<br>
+						<h5><i class="feather-shield"></i> Riwayat Kesehatan</h5>
+						<table>
+							<tr>
+								<th>No</th>
+								<th>Faskes</th>
+								<th>Dokter</th>
+								<th>Jenis Tes</th>
+								<th>Tanggal Tes</th>
+								<th>Tanggal Expired</th>
+								<th>Status</th>
+								<th>Keterangan</th>
+							</tr>
+							<tr v-for="d in detailKesehatan">
+								<td>{{d.no}}</td>
+								<td>{{d.faskes}}</td>
+								<td>{{d.dokter}}</td>
+								<td>{{d.jenistes}}</td>
+								<td>{{d.tanggaltes}}</td>
+								<td>{{d.tanggalexpired}}</td>
+								<td>{{d.status}}</td>
+								<td>{{d.keterangan}}</td>
+							</tr>
+						</table>
+						<br>
+					</template>
+				</app-modal>
+				
+				<app-modal v-model:data="DELETE" :url="$apiurl" method="delete">
+					<template #default="{form, error, reset}">
+						<h4><i class="feather-trash"></i> Delete</h4>
+						<p>
+							Menghapus data passport akan <b>menghapus seluruh data riwayat kesehatan dan perjalanan</b>, <br>
+							Apakah anda yakin ingin menghapus data ?
+						</p>
+						<pre class="small" v-text="JSON.stringify(form,null,2)"></pre>
+						<div class="small">
+							<button class="error">Hapus</button>
+							<button @click.prevent="reset()" class="muted">Batal</button>
+						</div>
+					</template>
+				</app-modal>
+				<!-- [App Modal] End -->
+				
+			`
+		});
+		
+		app.component('card-kunjungan',{
+			props:['kunjungan'],
+			data(){
+				return {}
+			},
+			methods:{
+				
+			},
+			template:`	
+				<div class="relative">
+					<div style="height:250px">
+						<img :src="kunjungan.fotodtw" class="rounded shadow" style="height:250px;object-fit:cover">
+					</div>
+					<div class="relative white rounded shadow mx-3 mx-lg-5 py-3 px-4" style="z-index:1;margin-top:-6em;">
+						<h5 class="">
+							<span class="border-bottom-left">
+								{{kunjungan.wisata}}
+							</span>
+							<small class="right">
+								<i class="feather-map-pin small"></i> {{kunjungan.alamatdtw}}
+							</small>
+						</h5>
+						<p class=""> {{kunjungan.tanggal}}</p>
+						<p class="m-0">
+							<a class="text-maroon">{{kunjungan.jumlah}} orang</a>
+						</p>
+					</div>
+				</div>
+			`
+		})
 	</script>
 	
 	<!-- [SCRIPT] Start -->

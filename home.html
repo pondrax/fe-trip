@@ -55,7 +55,7 @@
 					<span class="text-info">&mdash;</span>
 				</h2>
 				<p class="mb-3">Identitas dan status kolega anda</p>
-				<div class="row gap one two-md three-xl">
+				<div class="row gap one two-md">
 					<div class="px-2">
 						<button class="muted tile w-100 rounded m-0" @click="open('FORMPASSPORT')">
 							<div class="extra-large p-4">
@@ -122,17 +122,12 @@
 				return {
 					FORMPASSPORT:{},
 					PASSPORT:{
-						detail:[
-							{idpassport:1,nama:'Nama lengkap anda',alamat:'Sidowungu, Menganti, Gresik',status:'Valid',keterangan:'Aktif hingga 10 Jan',tanggalexpired:'13 Januari 2021'},
-							{idpassport:2,nama:'Nama Istri anda',alamat:'Sidowungu, Menganti, Gresik',status:'Tidak Valid',keterangan:'Tanggal sudah expired',tanggalexpired:'13 Januari 2021'},
-							{idpassport:3,nama:'Anak ke 1 ',alamat:'Sidowungu, Menganti, Gresik',status:'Proses Validasi',keterangan:'Harap menunggu sedang divalidasi',tanggalexpired:'13 Januari 2021'},
-							{idpassport:4,nama:'Anak ke 2',alamat:'Sidowungu, Menganti, Gresik',status:null,keterangan:null,tanggalexpired:'13 Januari 2021'},
-						]
+						detail:[]
 					},
 					KUNJUNGAN:{
 						detail:[
-							{wisata:'Selecta',alamatdtw:'batu',telpdtw:'12346789',fotodtw:'http://placeimg.com/640/360/any',lat:'',lon:'',tanggal:'8 Jan 2021',jumlah:2},
-							{wisata:'Jatim Park 3',alamatdtw:'batu',telpdtw:'12346789',fotodtw:'http://placeimg.com/640/360/any2',lat:'',lon:'',tanggal:'9 Jan 2021',jumlah:1},
+							{wisata:'Selecta',alamatdtw:'batu',telpdtw:'12346789',fotodtw:'http://placeimg.com/320/240/any',lat:'',lon:'',tanggal:'8 Jan 2021',jumlah:2},
+							{wisata:'Jatim Park 3',alamatdtw:'batu',telpdtw:'12346789',fotodtw:'http://placeimg.com/360/240/any2',lat:'',lon:'',tanggal:'9 Jan 2021',jumlah:1},
 						]
 					}
 				}
@@ -143,7 +138,15 @@
 			},
 			methods:{
 				fetchPassport(){
-					
+					http.post(this.$apiurl+'api/ppassport/read',{
+						body:this.setData({
+							start:0,
+							length:10
+						})
+					}).then(response=>{
+						console.log(response);
+						this.PASSPORT.detail = response.message.data;
+					})
 				},
 				fetchKunjungan(){
 					
@@ -159,23 +162,34 @@
 					DETAIL:{},
 					FORM:{},
 					DELETE:{},
-					detailKesehatan:[
-						{no:1,faskes:'Sememi',dokter:'Budiono',jenistes:'Rapid Antigen',tanggaltes:'10 Januari 2021',tanggalexpired:'13 Januari 2021',status:'Valid',keterangan:'-'},
-						{no:1,faskes:'Sememi',dokter:'Budiono',jenistes:'Rapid Antigen',tanggaltes:'10 Januari 2021',tanggalexpired:'13 Januari 2021',status:'Tidak Valid',keterangan:'-'},
-						{no:1,faskes:'Sememi',dokter:'Budiono',jenistes:'Rapid Antigen',tanggaltes:'10 Januari 2021',tanggalexpired:'13 Januari 2021',status:'valid',keterangan:'-'},
-					]
+					detailKesehatan:[],
+					detailLoading:false
 				}
 			},
 			methods:{
 				fetchDetailKesehatan(passport){
 					this.open('DETAIL',passport);
-					console.log('detail kesehatan',passport.idpassport);
-					//http.post(this.apiurl+'api/getDetailKesehatan/',{})
+					this.detailLoading = true;
+					http.post(this.$apiurl+'api/prapid/read',{
+						body:this.setData({
+							start:0,
+							length:10,
+							idpassport:passport.idpassport
+						})
+					}).then(response=>{
+						this.detailKesehatan = response.message.data;
+					}).finally(()=>{
+						this.detailLoading = false;
+					});
 				}
 			},
 			computed:{
 				statusClass(){
-					return this.passport.status=='Valid'?'success':this.passport.status=='Proses Validasi'?'muted':'error';
+					return this.passport.status=='Valid' && this.passport.expired==0?
+							'success':
+							this.passport.status=='Proses Validasi'?
+								'muted':
+								'error';
 				}
 			},
 			template:`
@@ -206,13 +220,13 @@
 							<p>
 								<b class="large mr-1">{{passport.nama}}</b>
 								
-								<button v-if="passport.status!='Valid'" class="label warning">Update</button>
+								<button v-if="passport.status!='Valid'" class="label warning">Update Data</button>
 								<button v-else class="label info" @click="fetchDetailKesehatan(passport)">Lihat detail</button>
 							</p>
 							<p class="m-0">Alamat : {{passport.alamat}}</p>
-							<p class="m-0">Status : {{passport.status||'-'}}</p>
+							<p class="m-0">Status : {{passport.expired!=0?'Kadaluarsa':passport.status||'-'}}</p>
 							<p class="m-0">Expired : {{passport.tanggalexpired||'-'}}</p>
-							<p  class="m-0">Keterangan : {{passport.keterangan||'Belum diupload'}}</p>
+							<p  class="m-0">Keterangan : {{!passport.keterangan?'Belum diupload':passport.expired==0?'Data sudah kadaluarsa':passport.keterangan}}</p>
 						</div>
 					</div>
 				</div>
@@ -240,7 +254,13 @@
 								<th>Status</th>
 								<th>Keterangan</th>
 							</tr>
-							<tr v-for="d in detailKesehatan">
+							<tr v-if="detailLoading">
+								<td colspan="8">Loading...</td>
+							</tr>
+							<tr v-else-if="detailKesehatan.length==0 && !detailLoading">
+								<td colspan="8">Tidak ada data</td>
+							</tr>
+							<tr v-else v-for="d in detailKesehatan">
 								<td>{{d.no}}</td>
 								<td>{{d.faskes}}</td>
 								<td>{{d.dokter}}</td>

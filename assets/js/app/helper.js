@@ -56,12 +56,13 @@ load = Object.assign(load,{
 
 var http=function(url,props){
 	if(!!window.APP_TOKEN){
-		props={headers:{Authorization:'Bearer '+APP_TOKEN},...props};
+		props={headers:{Authorization:'Bearer '+localStorage.getItem(config.$apikey)},...props};
 	}
 	return new Promise((resolve,reject)=>{
 		fetch(url,props)
 			.then(r=>{ 
 				if(r.headers.has('jwt')){
+					window.APP_TOKEN = r.headers.get('jwt');
 					localStorage.setItem(config.$apikey, r.headers.get('jwt'));
 				}
 				if (r.ok) {
@@ -88,7 +89,13 @@ var http=function(url,props){
 				}catch(err){
 					error=e
 				}
-				return reject(error)
+				console.log(error);
+				if(error.message== "Token signature expired"){
+					alert(error.message);
+					setTimeout(()=>{window.location.href = './login.html';},2000);
+				}else{
+					return reject(error);
+				}
 			})
 	})
 }

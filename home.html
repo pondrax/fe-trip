@@ -243,34 +243,36 @@
 						</div>
 						<br>
 						<h5><i class="feather-shield"></i> Riwayat Kesehatan</h5>
-						<table>
-							<tr>
-								<th>No</th>
-								<th>Faskes</th>
-								<th>Dokter</th>
-								<th>Jenis Tes</th>
-								<th>Tanggal Tes</th>
-								<th>Tanggal Expired</th>
-								<th>Status</th>
-								<th>Keterangan</th>
-							</tr>
-							<tr v-if="detailLoading">
-								<td colspan="8">Loading...</td>
-							</tr>
-							<tr v-else-if="detailKesehatan.length==0 && !detailLoading">
-								<td colspan="8">Tidak ada data</td>
-							</tr>
-							<tr v-else v-for="d in detailKesehatan">
-								<td>{{d.no}}</td>
-								<td>{{d.faskes}}</td>
-								<td>{{d.dokter}}</td>
-								<td>{{d.jenistes}}</td>
-								<td>{{d.tanggaltes}}</td>
-								<td>{{d.tanggalexpired}}</td>
-								<td>{{d.status}}</td>
-								<td>{{d.keterangan}}</td>
-							</tr>
-						</table>
+						<div class="overflow-x">
+							<table>
+								<tr class="nowrap">
+									<th class="px-2">No</th>
+									<th class="px-2">Faskes</th>
+									<th class="px-2">Dokter</th>
+									<th class="px-2">Jenis Tes</th>
+									<th class="px-2">Tanggal Tes</th>
+									<th class="px-2">Tanggal Expired</th>
+									<th class="px-2">Status</th>
+									<th class="px-2">Keterangan</th>
+								</tr>
+								<tr v-if="detailLoading">
+									<td colspan="8">Loading...</td>
+								</tr>
+								<tr v-else-if="detailKesehatan.length==0 && !detailLoading">
+									<td colspan="8">Tidak ada data</td>
+								</tr>
+								<tr v-else v-for="d in detailKesehatan">
+									<td>{{d.no}}</td>
+									<td>{{d.faskes}}</td>
+									<td>{{d.dokter}}</td>
+									<td>{{d.jenistes}}</td>
+									<td>{{d.tanggaltes}}</td>
+									<td>{{d.tanggalexpired}}</td>
+									<td>{{d.status}}</td>
+									<td>{{d.keterangan}}</td>
+								</tr>
+							</table>
+						</div>
 						<br>
 					</template>
 				</app-modal>

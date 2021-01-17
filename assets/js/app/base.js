@@ -444,7 +444,7 @@ app.component('v-texteditor',{
 
 app.component('v-select',{
 	name: 'VSelect',
-	props:['placeholder','error','options','keyvalue','keyid','hint','classname','multiple','create','url','clearable','modelValue'],
+	props:['placeholder','error','options','keyvalue','keyid','hint','classname','multiple','create','url','clearable','modelValue','optional'],
 	emits: ['update:modelValue'],
 	data(){
 		return {
@@ -455,17 +455,28 @@ app.component('v-select',{
 			arrowIndex:-1,
 			urlOptions:[],
 			selected:[],
-			isLoading:true
+			isLoading:false
 		}
 	},
 	mounted(){
-		this.init(this.url);
+		// console.log('request',localStorage.getItem(this.$apikey));
+		if(typeof this.optional =='object'){
+			// console.log(this.optional);
+			// setTimeout(()=>{
+				// this.init(this.url);
+			// },2000);
+		}else{
+			this.init(this.url);
+		}
 		document.addEventListener('click',this.setFocus);
 	},
 	unmounted(){
 		document.removeEventListener('click',this.setFocus);
 	},
 	watch:{
+		optional(val){
+			this.init(this.url);
+		},
 		url(val){
 			this.init(val);
 		},
@@ -553,12 +564,16 @@ app.component('v-select',{
 			
 			if(url){
 				this.isLoading=true;
-				var params=`filter[${this.keyid}]=&filter[${this.keyvalue}]=&filteronly=1`;
+				var formData = Object.assign({
+					start:0,
+					length:-1
+				},this.optional);
+				console.log(formData);
 				var separator = url.indexOf('?')>-1 ? '&' : '?' ;
-				http(url+separator+params).then(json=>
-					this.urlOptions=json.data.rows
+				http.post(url,{body:this.setData(formData)}).then(json=>
+					this.urlOptions=json.message.data
 				).catch(error=>{				
-					APP.$refs.LOADER.add(`<b>${error.data.message}</b>`, 'error', -1);
+					APP.$refs.LOADER.add(`<b>${error.message}</b>`, 'error', -1);
 				}).finally(()=>{
 					setTimeout(()=>{
 						this.isLoading=false;

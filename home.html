@@ -86,12 +86,12 @@
 			</div>
 		</section>
 		
-		<app-modal v-model:data="FORMPASSPORT" :url="$apiurl">
+		<app-modal v-model:data="FORMPASSPORT" :url="$apiurl+'api/ppassport/create'">
 			<template #default="{form, error, reset}">
 			
 				<h4><i class="feather-user"></i> Passport Baru</h4>
-				<div class="grid-sm m-0">
-					<div class="row gap one">													
+				<div class="m-0">
+					<div class="row gap one two-md">													
 						<v-text v-model="form.nik" placeholder="NIK"></v-text>
 						
 						<v-text v-model="form.nama" placeholder="Nama"></v-text>
@@ -104,10 +104,41 @@
 						
 						<v-select v-model="form.kelamin" :options="['Laki-laki','Perempuan']" placeholder="Jenis Kelamin"></v-select>
 						
+						<v-select v-model="form.idpropinsi" :url="$apiurl+'api/ppassport/read'" placeholder="Provinsi" keyid="idpassport" keyvalue="nama"></v-select>
+						
+						<v-select v-model="form.idkota" :url="$apiurl+'api/prapid/read'" placeholder="Kabupaten / Kota" keyid="idrapid" keyvalue="faskes" :optional="{idpropinsi:form.idpropinsi}"></v-select>
+						
 					</div>
 				</div>
 				<div class="">
-					<button type="button" class="secondary">Selanjutnya</button>
+					<button class="secondary">Selanjutnya</button>
+				</div>
+			</template>
+		</app-modal>
+		
+		
+		
+		<app-modal v-model:data="FORMRAPID" :url="$apiurl+'api/prapid/create'">
+			<template #default="{form, error, reset}">
+			
+				<h4><i class="feather-user"></i> Hasil Lab</h4>
+				<div class="m-0">
+					{{form}}
+					<div class="row gap one two-md">													
+						<v-text v-model="form.faskes" placeholder="Faskes"></v-text>
+						
+						<v-text v-model="form.dokter" placeholder="Nama Dokter (tanpa gelar)"></v-text>
+						
+						<v-date v-model="form.tanggaltes" placeholder="Tanggal Tes"></v-date>
+						
+						<v-file v-model="form.hasillab" placeholder="Foto Hasil Lab"></v-file>
+						
+						<v-select v-model="form.kelamin" :options="[{idjenistes:1,nama:'Rapid Antibodi'},{idjenistes:2,nama:'Rapid Antigen'},{idjenistes:3,nama:'PCR/Swab'}]" placeholder="Jenis Tes" keyid="idjenistes" keyvalue="nama"></v-select>
+						
+					</div>
+				</div>
+				<div class="">
+					<button class="secondary">Selanjutnya</button>
 				</div>
 			</template>
 		</app-modal>
@@ -121,6 +152,7 @@
 			data(){
 				return {
 					FORMPASSPORT:{},
+					FORMRAPID:{},
 					PASSPORT:{
 						detail:[]
 					},

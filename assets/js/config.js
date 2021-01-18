@@ -3,7 +3,7 @@
 const config = {
 	$name		: 'Travel Passport',
 	$apiurl		: 'http://localhost/travpas/public/',
-	$baseurl	: 'http://localhost/frontend/',
+	$baseurl	: 'http://localhost/fe-trip/',
 	$apikey		: 'asdasdasdhkj23askdjklqlwkoououasdkhklha',
 	$menu		: {}
 };

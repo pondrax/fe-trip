@@ -86,11 +86,12 @@
 			</div>
 		</section>
 		
-		<app-modal v-model:data="FORMPASSPORT" :url="$apiurl+'api/ppassport/create'">
+		<app-modal v-model:data="FORMPASSPORT" :url="$apiurl+'api/ppassport/create'" :success="createdPassport">
 			<template #default="{form, error, reset}">
 			
 				<h4><i class="feather-user"></i> Passport Baru</h4>
 				<div class="m-0">
+					{{form}}
 					<div class="row gap one two-md">													
 						<v-text v-model="form.nik" placeholder="NIK"></v-text>
 						
@@ -104,9 +105,9 @@
 						
 						<v-select v-model="form.kelamin" :options="['Laki-laki','Perempuan']" placeholder="Jenis Kelamin"></v-select>
 						
-						<v-select v-model="form.idpropinsi" :url="$apiurl+'api/ppassport/read'" placeholder="Provinsi" keyid="idpassport" keyvalue="nama"></v-select>
+						<v-select v-model="form.idpropinsi" :url="$apiurl+'api/pprovinsi/read'" placeholder="Provinsi" keyid="idpropinsi" keyvalue="nama"></v-select>
 						
-						<v-select v-model="form.idkota" :url="$apiurl+'api/prapid/read'" placeholder="Kabupaten / Kota" keyid="idrapid" keyvalue="faskes" :optional="{idpropinsi:form.idpropinsi}"></v-select>
+						<v-select v-model="form.idkota" :url="$apiurl+'api/pkota/read'" placeholder="Kabupaten / Kota" keyid="idkota" keyvalue="nama" :optional="{idpropinsi:form.idpropinsi}"></v-select>
 						
 					</div>
 				</div>
@@ -180,6 +181,9 @@
 						this.PASSPORT.detail = response.message.data;
 					})
 				},
+				createdPassport(){
+					this.fetchPassport();
+				},
 				fetchKunjungan(){
 					
 				}
@@ -244,7 +248,7 @@
 									<a @click="open('FORM',passport)">Ubah</a>
 								</li> 
 								<li class="menu-item">
-									<a @click="open('DELETE',Object.assign(passport,{id:passport.idpassport}))">Hapus</a>
+									<a @click="open('DELETE',passport)">Hapus</a>
 								</li> 
 							</ul> 
 						</div>
@@ -309,15 +313,20 @@
 					</template>
 				</app-modal>
 				
-				<app-modal v-model:data="DELETE" :url="$apiurl" method="delete">
+				<app-modal v-model:data="DELETE" :url="$apiurl+'api/ppasport'" method="delete">
 					<template #default="{form, error, reset}">
 						<h4><i class="feather-trash"></i> Delete</h4>
 						<p>
 							Menghapus data passport akan <b>menghapus seluruh data riwayat kesehatan dan perjalanan</b>, <br>
 							Apakah anda yakin ingin menghapus data ?
 						</p>
+						<p class="silver p-3">
+							Nama : {{form.nama}}<br>
+							Alamat : {{form.alamat}}<br>
+							Umur : {{form.umur}}<br>
+						</p>
 						<pre class="small" v-text="JSON.stringify(form,null,2)"></pre>
-						<div class="small">
+						<div class="">
 							<button class="error">Hapus</button>
 							<button @click.prevent="reset()" class="muted">Batal</button>
 						</div>

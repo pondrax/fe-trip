@@ -7,7 +7,7 @@ app.component('app-form',{
 			<slot :form="data.form||{}" :error="error" :reset="reset"></slot>
 		</form>
 	`,
-	props	: ['url','method','data','toggle','success','fail'],
+	props	: ['url','method','data','toggle','success','fail','id'],
 	data(){
 		return {
 			error: {}
@@ -17,6 +17,7 @@ app.component('app-form',{
 		submitForm(){
 			this.updateData({
 				url:this.url,
+				id:this.id,
 				method:this.method,
 				data:this.data.form,
 				success:this.success,
@@ -31,7 +32,7 @@ app.component('app-modal',{
 	name:'AppModal',
 	template : `
 		<div v-if="data.show" class="modal active">
-			<div class="overlay absolute top-left bottom-right" @click="reset"></div>
+			<div class="overlay absolute top-left bottom-right"></div>
 			<article class="p-4 overflow-y" style="width:100%;max-width:75vw;max-height:100vh">
 				<a class="right h4" @click="reset">&times;</a>
 				<form @submit.prevent="submitForm()">
@@ -40,7 +41,7 @@ app.component('app-modal',{
 			</article>
 		</div>
 	`,
-	props	: ['url','method','data','toggle','success','fail','closeable'],
+	props	: ['url','method','data','toggle','success','fail','closeable','id'],
 	data(){
 		return {
 			error: {}
@@ -50,6 +51,7 @@ app.component('app-modal',{
 		submitForm(){
 			this.updateData({
 				url:this.url,
+				id:this.id,
 				method:this.method,
 				data:this.data.form,
 				success:this.success,

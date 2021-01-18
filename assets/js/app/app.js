@@ -57,12 +57,14 @@ app.mixin({
 			})
 			return formData;
 		},
-		updateData({url,method,data,success,fail}){
+		updateData({url,id,method,data,success,fail}){
 			APP.$refs.LOADER.start();
 			if(method=='delete'){
-				url = url+'/'+ (!data.id ? 
+				console.log(data,id);
+				id=!!id?id:'id';
+				url = url+'/'+ (!data[id] ? 
 					Object.keys(data).map(d=>data[d]) :
-					data.id);
+					data[id]);
 				body = {};
 			}else{
 				body = this.setData(data);
@@ -72,13 +74,12 @@ app.mixin({
 				body : body,
 				method :method
 			}).then(response=>{
-				if(!!success){
+				APP.$refs.LOADER.add(response.message, 'success', -1);
+                APP.$refs.LOADER.clear(3000);
+                this.reset();
+                if(!!success){
 					success(response);
-				}else{
-                    APP.$refs.LOADER.add(response.message, 'success', -1);
-                    APP.$refs.LOADER.clear(3000);
-                    this.reset();
-                }
+				}
 			}).catch(error=>{
 				if(fail){
 					fail(error);

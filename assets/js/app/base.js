@@ -474,8 +474,16 @@ app.component('v-select',{
 		document.removeEventListener('click',this.setFocus);
 	},
 	watch:{
-		optional(val){
-			this.init(this.url);
+		optional(val,old){
+			Object.keys(val).forEach(k=>{
+				return val[k] === undefined && delete val[k]
+			});
+			// console.log(val,old)
+			if(Object.keys(val).length>0){
+				if(JSON.stringify(val)!=JSON.stringify(old)){
+					this.init(this.url);
+				}
+			}
 		},
 		url(val){
 			this.init(val);
@@ -584,6 +592,7 @@ app.component('v-select',{
 		setValue(opt,id){
 			this.arrowIndex = id;
 			var value	= this.keyid?opt[this.keyid.split('.').pop()] : opt ;
+			// console.log(opt,this.keyid,value);
 			if(this.isMultiple){
 				if(Array.isArray(this.text)){
 					this.text.push(value);

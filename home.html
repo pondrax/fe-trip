@@ -41,7 +41,7 @@
 					<div>
 						<button class="info extra-large">
 							<i class="feather-maximize mr-1"></i> 
-							<small class="pt-1">Bagikan Kode</small>
+							<small class="pt-1">Bagikan Kode </small>
 						</button>
 					</div>
 				</div>
@@ -86,7 +86,7 @@
 			</div>
 		</section>
 		
-		<app-modal v-model:data="FORMPASSPORT" :url="$apiurl+'api/ppassport/create'" :success="createdPassport">
+		<app-modal v-model:data="FORMPASSPORT" :url="$apiurl+'api/ppassport/create'" :success="fetchPassport">
 			<template #default="{form, error, reset}">
 			
 				<h4><i class="feather-user"></i> Passport Baru</h4>
@@ -105,36 +105,9 @@
 						
 						<v-select v-model="form.kelamin" :options="['Laki-laki','Perempuan']" placeholder="Jenis Kelamin"></v-select>
 						
-						<v-select v-model="form.idpropinsi" :url="$apiurl+'api/pprovinsi/read'" placeholder="Provinsi" keyid="idpropinsi" keyvalue="nama"></v-select>
+						<v-select v-model="form.idpropinsi" :url="$apiurl+'api/pprovinsi/read'" placeholder="Provinsi" keyid="idpropinsi" keyvalue="nama" required></v-select>
 						
-						<v-select v-model="form.idkota" :url="$apiurl+'api/pkota/read'" placeholder="Kabupaten / Kota" keyid="idkota" keyvalue="nama" :optional="{idpropinsi:form.idpropinsi}"></v-select>
-						
-					</div>
-				</div>
-				<div class="">
-					<button class="secondary">Selanjutnya</button>
-				</div>
-			</template>
-		</app-modal>
-		
-		
-		
-		<app-modal v-model:data="FORMRAPID" :url="$apiurl+'api/prapid/create'">
-			<template #default="{form, error, reset}">
-			
-				<h4><i class="feather-user"></i> Hasil Lab</h4>
-				<div class="m-0">
-					{{form}}
-					<div class="row gap one two-md">													
-						<v-text v-model="form.faskes" placeholder="Faskes"></v-text>
-						
-						<v-text v-model="form.dokter" placeholder="Nama Dokter (tanpa gelar)"></v-text>
-						
-						<v-date v-model="form.tanggaltes" placeholder="Tanggal Tes"></v-date>
-						
-						<v-file v-model="form.hasillab" placeholder="Foto Hasil Lab"></v-file>
-						
-						<v-select v-model="form.kelamin" :options="[{idjenistes:1,nama:'Rapid Antibodi'},{idjenistes:2,nama:'Rapid Antigen'},{idjenistes:3,nama:'PCR/Swab'}]" placeholder="Jenis Tes" keyid="idjenistes" keyvalue="nama"></v-select>
+						<v-select v-model="form.idkota" :url="$apiurl+'api/pkota/read'" placeholder="Kabupaten / Kota" keyid="idkota" keyvalue="nama" :optional="{idpropinsi:form.idpropinsi}" required></v-select>
 						
 					</div>
 				</div>
@@ -143,7 +116,7 @@
 				</div>
 			</template>
 		</app-modal>
-		
+				
 	</div>
 	<!-- [APP] End -->
 	
@@ -153,7 +126,6 @@
 			data(){
 				return {
 					FORMPASSPORT:{},
-					FORMRAPID:{},
 					PASSPORT:{
 						detail:[]
 					},
@@ -162,7 +134,7 @@
 							{wisata:'Selecta',alamatdtw:'batu',telpdtw:'12346789',fotodtw:'http://placeimg.com/320/240/any',lat:'',lon:'',tanggal:'8 Jan 2021',jumlah:2},
 							{wisata:'Jatim Park 3',alamatdtw:'batu',telpdtw:'12346789',fotodtw:'http://placeimg.com/360/240/any2',lat:'',lon:'',tanggal:'9 Jan 2021',jumlah:1},
 						]
-					}
+					},
 				}
 			},
 			mounted(){
@@ -181,9 +153,6 @@
 						this.PASSPORT.detail = response.message.data;
 					})
 				},
-				createdPassport(){
-					this.fetchPassport();
-				},
 				fetchKunjungan(){
 					
 				}
@@ -195,11 +164,12 @@
 			props:['passport'],
 			data(){
 				return {
+					FORMRAPID:{},
 					DETAIL:{},
-					FORM:{},
 					DELETE:{},
 					detailKesehatan:[],
-					detailLoading:false
+					detailLoading:false,
+					
 				}
 			},
 			methods:{
@@ -217,6 +187,9 @@
 					}).finally(()=>{
 						this.detailLoading = false;
 					});
+				},
+				fetchPassport(){
+					APP.fetchPassport();
 				}
 			},
 			computed:{
@@ -248,7 +221,7 @@
 									<a @click="open('FORM',passport)">Ubah</a>
 								</li> 
 								<li class="menu-item">
-									<a @click="open('DELETE',passport)">Hapus</a>
+									<a @click="open('DELETE',Object.assign(passport,{id:passport.idpassport}))">Hapus</a>
 								</li> 
 							</ul> 
 						</div>
@@ -256,7 +229,7 @@
 							<p>
 								<b class="large mr-1">{{passport.nama}}</b>
 								
-								<button v-if="passport.status!='Valid'" class="label warning">Update Data</button>
+								<button v-if="passport.status!='Valid'" class="label warning" @click="open('FORMRAPID',{idpassport:passport.idpassport})">Update Data</button>
 								<button v-else class="label info" @click="fetchDetailKesehatan(passport)">Lihat detail</button>
 							</p>
 							<p class="m-0">Alamat : {{passport.alamat}}</p>
@@ -266,7 +239,8 @@
 						</div>
 					</div>
 				</div>
-				
+
+
 				<!-- [App Modal] Start -->
 				<app-modal v-model:data="DETAIL">
 					<template #default="{form, error, reset}">
@@ -313,7 +287,32 @@
 					</template>
 				</app-modal>
 				
-				<app-modal v-model:data="DELETE" :url="$apiurl+'api/ppasport'" method="delete">
+				<app-modal v-model:data="FORMRAPID" :url="$apiurl+'api/prapid/create'">
+					<template #default="{form, error, reset}">
+					
+						<h4><i class="feather-user"></i> Hasil Lab </h4>
+						<div class="m-0">
+							<div class="row gap one two-md">													
+								<v-text v-model="form.faskes" placeholder="Faskes"></v-text>
+								
+								<v-text v-model="form.dokter" placeholder="Nama Dokter (tanpa gelar)"></v-text>
+								
+								<v-date v-model="form.tanggaltes" placeholder="Tanggal Tes"></v-date>
+								
+								<v-file v-model="form.hasillab" placeholder="Foto Hasil Lab"></v-file>
+								
+								<v-select v-model="form.kelamin" :url="$apiurl+'api/pjenistes/read'" placeholder="Jenis Tes" keyid="idjenistes" keyvalue="nama"></v-select>
+								
+							</div>
+						</div>
+						<div class="">
+							<button class="secondary">Selanjutnya</button>
+						</div>
+					</template>
+				</app-modal>
+				
+				
+				<app-modal v-model:data="DELETE" :url="$apiurl+'api/ppassport'" method="delete" :success="fetchPassport">
 					<template #default="{form, error, reset}">
 						<h4><i class="feather-trash"></i> Delete</h4>
 						<p>
@@ -325,13 +324,17 @@
 							Alamat : {{form.alamat}}<br>
 							Umur : {{form.umur}}<br>
 						</p>
+		<!--
 						<pre class="small" v-text="JSON.stringify(form,null,2)"></pre>
+		-->
 						<div class="">
 							<button class="error">Hapus</button>
 							<button @click.prevent="reset()" class="muted">Batal</button>
 						</div>
 					</template>
 				</app-modal>
+				
+				
 				<!-- [App Modal] End -->
 				
 			`

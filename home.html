@@ -245,11 +245,16 @@
 				<app-modal v-model:data="DETAIL">
 					<template #default="{form, error, reset}">
 						<h4><i class="feather-user"></i> Detail Passport</h4>
-						<div class="">
-							<p>Nama : <b>{{form.nama}}</b> </p>
-							<p class="m-0">Alamat : <b>{{form.alamat}}</b> </p>
-							<p class="m-0">Status : <b>{{form.status}}</b> </p>
-							<p class="m-0">Keterangan : <b>{{form.keterangan}}</b> </p>
+						<div class="row">
+							<div>
+								<p>Nama : <b>{{form.nama}}</b> </p>
+								<p class="m-0">Alamat : <b>{{form.alamat}}</b> </p>
+								<p class="m-0">Status : <b>{{form.status}}</b> </p>
+								<p class="m-0">Keterangan : <b>{{form.keterangan}}</b> </p>
+							</div>
+							<div>
+								<img :src="$apiurl+'uploads/'+form.qrcode+'.png'">
+							</div>
 						</div>
 						<br>
 						<h5><i class="feather-shield"></i> Riwayat Kesehatan</h5>
@@ -287,10 +292,11 @@
 					</template>
 				</app-modal>
 				
-				<app-modal v-model:data="FORMRAPID" :url="$apiurl+'api/prapid/create'">
+				<app-modal v-model:data="FORMRAPID" :url="$apiurl+'api/prapid/create'" :success="fetchPassport">
 					<template #default="{form, error, reset}">
 					
 						<h4><i class="feather-user"></i> Hasil Lab </h4>
+						{{form}}
 						<div class="m-0">
 							<div class="row gap one two-md">													
 								<v-text v-model="form.faskes" placeholder="Faskes"></v-text>
@@ -299,9 +305,9 @@
 								
 								<v-date v-model="form.tanggaltes" placeholder="Tanggal Tes"></v-date>
 								
-								<v-file v-model="form.hasillab" placeholder="Foto Hasil Lab"></v-file>
+								<v-select v-model="form.idjenistes" :url="$apiurl+'api/pjenistes/read'" placeholder="Jenis Tes" keyid="idjenistes" keyvalue="nama"></v-select>
 								
-								<v-select v-model="form.kelamin" :url="$apiurl+'api/pjenistes/read'" placeholder="Jenis Tes" keyid="idjenistes" keyvalue="nama"></v-select>
+								<v-file v-model="form.hasillab" placeholder="Foto Hasil Lab"></v-file>								
 								
 							</div>
 						</div>

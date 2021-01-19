@@ -9,6 +9,16 @@ $.ready = function(fn){
 	return document.addEventListener('DOMContentLoaded',fn)
 }
 
+function setData(form){	
+	var formData = new FormData();
+	Object.keys(form).map(name=>{
+		var value = form[name];
+		if(typeof value !=='undefined' && value !='undefined'){
+			formData.append(name,value)
+		}
+	})
+	return formData;
+}
 var load = (urls)=>{
 	if(!Array.isArray(urls)){
 		urls = urls.split(',');

@@ -64,8 +64,8 @@
 							</div>
 						</button>
 					</div>
-					<div v-for="pass in PASSPORT.detail" class="px-2">
-						<card-passport :passport="pass"></card-passport>
+					<div v-for="(pass,i) in PASSPORT.detail" class="px-2">
+						<card-passport :ref="'passport'+i" :passport="pass"></card-passport>
 					</div>
 				</div>
 			</div>
@@ -86,7 +86,7 @@
 			</div>
 		</section>
 		
-		<app-modal v-model:data="FORMPASSPORT" :url="$apiurl+'api/ppassport/create'" :success="fetchPassport">
+		<app-modal v-model:data="FORMPASSPORT" :url="$apiurl+'api/ppassport/create'" :success="successAddPassport">
 			<template #default="{form, error, reset}">
 			
 				<h4><i class="feather-user"></i> Passport Baru</h4>
@@ -153,6 +153,24 @@
 						this.PASSPORT.detail = response.message.data;
 					})
 				},
+				successAddPassport(){				
+					http.post(this.$apiurl+'api/ppassport/read',{
+						body:this.setData({
+							start:0,
+							length:10
+						})
+					}).then(response=>{
+						console.log(response);
+						this.PASSPORT.detail = response.message.data;						
+						setTimeout(()=>{
+							var index = APP.PASSPORT.detail.length;
+							var child = APP.$refs['passport'+index];
+							var newPassport = APP.PASSPORT.detail.pop();
+							console.log(newPassport);
+							child.openFormRapid({idpassport:newPassport.idpassport});
+						},500);
+					})
+				},
 				fetchKunjungan(){
 					
 				}
@@ -173,6 +191,9 @@
 				}
 			},
 			methods:{
+				openFormRapid(){
+					console.log('rapid');
+				},
 				fetchDetailKesehatan(passport){
 					this.open('DETAIL',passport);
 					this.detailLoading = true;
@@ -253,9 +274,16 @@
 								<p class="m-0">Keterangan : <b>{{form.keterangan}}</b> </p>
 							</div>
 							<div>
-								<img :src="$apiurl+'uploads/'+form.qrcode+'.png'">
+								<div class="right">
+									<!-- <img :src="$apiurl+'uploads/'+form.qrcode+'.png'" width="200" height="200" :alt="form.qrcode"> -->
+									<img :src="$apiurl+'qr/?'+form.qrcode" width="200" height="200" :alt="form.qrcode">
+									<p class="small text-center">
+										{{form.qrcode}}
+									</p>
+								</div>
 							</div>
 						</div>
+						<button v-if="passport.status!='Valid'" type="button" class="warning" @click="open('FORMRAPID',{idpassport:passport.idpassport})">Update Hasil Lab</button>
 						<br>
 						<h5><i class="feather-shield"></i> Riwayat Kesehatan</h5>
 						<div class="overflow-x">

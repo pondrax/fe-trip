@@ -65,7 +65,7 @@
 						</button>
 					</div>
 					<div v-for="(pass,i) in PASSPORT.detail" class="px-2">
-						<card-passport :ref="'passport'+i" :passport="pass"></card-passport>
+						<card-passport :ref="'passport'" :passport="pass"></card-passport>
 					</div>
 				</div>
 			</div>
@@ -160,15 +160,17 @@
 							length:10
 						})
 					}).then(response=>{
-						console.log(response);
-						this.PASSPORT.detail = response.message.data;						
-						setTimeout(()=>{
-							var index = APP.PASSPORT.detail.length;
-							var child = APP.$refs['passport'+index];
-							var newPassport = APP.PASSPORT.detail.pop();
-							console.log(newPassport);
-							child.openFormRapid({idpassport:newPassport.idpassport});
-						},500);
+						console.log(response.message.data);
+						this.PASSPORT.detail = response.message.data;	
+						var newPassport = response.message.data.pop();
+						APP.$refs.passport.open('FORMRAPID',{idpassport:newPassport.idpassport});
+						//setTimeout(()=>{
+							//var index = APP.PASSPORT.detail.length;
+							//var child = APP.$refs['passport'+index];
+							//var newPassport = APP.PASSPORT.detail.pop();
+							//console.log(newPassport);
+							//child.openFormRapid({idpassport:newPassport.idpassport});
+						//},500);
 					})
 				},
 				fetchKunjungan(){

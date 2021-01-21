@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Jati Travel Passport">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Travel Passport</title>
+	<link href="webassets/css/lib/drax.css" rel="stylesheet">
+	<link href="webassets/css/lib/feather.css" rel="stylesheet">
+	<link href="webassets/css/lib/animate.min.css" rel="stylesheet">
+	<link href="webassets/css/app.css" rel="stylesheet">
+	<script src="webassets/js/app/helper.js"></script>
+	<script src="webassets/js/lib/vue.global.prod.js"></script>
+	<!-- <script src="@asset('js/lib/vue.global.js')"></script> -->
+</head>
+<body class="silver">
+	<style>
+	.grid-md{max-width:1000px;margin:0 auto;}
+	.grid-sm{max-width:400px;margin:0 auto}
+	</style>
+	<!-- [APP] Start -->
+	<div id="APP" class="p-4">
+		<app-loader ref="LOADER"></app-loader>
+		
+		<div class="column two center p-4" style="height:100vh">
+			<div class="p-4">
+				<h2 class="text-center">Jatim Travel Passport</h2>
+				<div class="row one two-md three-lg center">
+					<div class="text-center">
+						<div class="box-1x1">
+							<video id="qr-scanner" class="gray rounded shadow"></video>
+						</div>
+						<div class="large p-3">
+							Scan QR 
+							<span id="qr-result"></span>
+						</div>
+<!--
+						<div class="group">
+							<button @click="scanStart()" class="info">Start</button>
+							<button @click="scanStop()">Stop</button>
+						</div>
+-->
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<app-modal v-model:data="HASILSCAN">
+			<template #default="{form, error, reset}">
+				<h4><i class="feather-maximize"></i> Hasil Scan</h4>
+				<p class="silver p-3">
+					Nama : {{form.nama}}<br>
+					Alamat : {{form.alamat}}<br>
+					Umur : {{form.umur}}<br>
+				</p>
+				<div class="">
+					<button class="info">Ijinkan Masuk</button>
+					<button @click.prevent="reset();scanStart()" class="muted">Scan Ulang</button>
+				</div>
+			</template>
+		</app-modal>	
+		
+	</div>
+	<!-- [APP] End -->
+	
+	<script src="webassets/js/lib/qrcode/qr-scanner.umd.min.js"></script>
+	<script>
+		QrScanner.WORKER_PATH = "webassets/js/lib/qrcode/qr-scanner-worker.min.js";
+		/* [APP] Root */
+		const app = Vue.createApp({
+			data(){
+				return {
+					HASILSCAN:{},
+					qrScanner : null
+				}
+			},
+			mounted(){				
+				this.qrScanner = new QrScanner($('#qr-scanner'), result => {
+					this.fetchResult(result);
+				});
+				this.qrScanner.start();
+			},
+			methods:{
+				fetchResult(result){
+					this.scanStop();
+					console.log(result);
+					http.post(this.$apiurl+'/api/ppassport/read',{
+						body:this.setData({
+							start:0,
+							length:1,
+							idpassport:1
+						})
+					}).then(r=>{
+						console.log(r);
+					});
+					this.open('HASILSCAN');
+				},
+				successAddVisitor(success){
+					this.scanStart();
+				},
+				scanStart(){
+					this.qrScanner.start();				
+				},
+				scanStop(){
+					this.qrScanner.stop();			
+				}
+			}
+		});
+	</script>
+	
+	<!-- [SCRIPT] Start -->
+	<div id="app-script">
+		<script src="webassets/js/config.js"></script>
+		<script src="webassets/js/app/base.js"></script>
+		<script src="webassets/js/app/form.js"></script>
+		<script src="webassets/js/app/table.js"></script>
+		<script src="webassets/js/app/app.js"></script>
+	</div>
+</body>
+</html>

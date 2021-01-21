@@ -6,12 +6,12 @@
 	<meta name="description" content="{{ APP_DESC }}">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Travel Passport</title>
-	<link href="assets/css/lib/drax.css" rel="stylesheet">
-	<link href="assets/css/lib/feather.css" rel="stylesheet">
-	<link href="assets/css/lib/animate.min.css" rel="stylesheet">
-	<link href="assets/css/app.css" rel="stylesheet">
-	<script src="assets/js/app/helper.js"></script>
-	<script src="assets/js/lib/vue.global.prod.js"></script>
+	<link href="webassets/css/lib/drax.css" rel="stylesheet">
+	<link href="webassets/css/lib/feather.css" rel="stylesheet">
+	<link href="webassets/css/lib/animate.min.css" rel="stylesheet">
+	<link href="webassets/css/app.css" rel="stylesheet">
+	<script src="webassets/js/app/helper.js"></script>
+	<script src="webassets/js/lib/vue.global.prod.js"></script>
 	<!-- <script src="@asset('js/lib/vue.global.js')"></script> -->
 </head>
 <body>
@@ -357,9 +357,14 @@
 					<template #default="{form, error, reset}">
 						<h4><i class="feather-user"></i> Detail Passport</h4>
 						<div class="row">
-							<div>
+							<div class="py-2">
 								<p>Nama : <b>{{form.nama}}</b> </p>
 								<p class="m-0">Alamat : <b>{{form.alamat}}</b> </p>
+								<p class="m-0">Faskes : <b>{{form.faskes}}</b> </p>
+								<p class="m-0">Dokter : <b>{{form.dokter}}</b> </p>
+								<p class="m-0">Jenis Tes : <b>{{form.jenistes}}</b> </p>
+								<p class="m-0">Tanggal Tes : <b>{{form.tanggaltes}}</b> </p>
+								<p class="m-0">Tanggal Expired : <b>{{form.tanggalexpired}}</b> </p>
 								<p class="m-0">Status : <b>{{form.status}}</b> </p>
 								<p class="m-0">Keterangan : <b>{{form.keterangan}}</b> </p>
 							</div>
@@ -448,11 +453,11 @@
 	
 	<!-- [SCRIPT] Start -->
 	<div id="app-script">
-		<script src="assets/js/config.js"></script>
-		<script src="assets/js/app/base.js"></script>
-		<script src="assets/js/app/form.js"></script>
-		<script src="assets/js/app/table.js"></script>
-		<script src="assets/js/app/app.js"></script>
+		<script src="webassets/js/config.js"></script>
+		<script src="webassets/js/app/base.js"></script>
+		<script src="webassets/js/app/form.js"></script>
+		<script src="webassets/js/app/table.js"></script>
+		<script src="webassets/js/app/app.js"></script>
 	</div>
 </body>
 </html>

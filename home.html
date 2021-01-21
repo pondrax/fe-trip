@@ -22,6 +22,7 @@
 	<!-- [APP] Start -->
 	<div id="APP" class="p-4">
 		<app-loader ref="LOADER"></app-loader>
+<!--
 		
 		<section id="intro" class="shadow-lg rounded-lg p-5">
 			<div class="grid-md">
@@ -48,6 +49,7 @@
 			</div>
 		</section>
 		
+-->
 		<section id="passport" class="shadow-lg rounded-lg p-5">
 			<div class="grid-md">
 				<h2 class="text-left">
@@ -65,7 +67,7 @@
 						</button>
 					</div>
 					<div v-for="(pass,i) in PASSPORT.detail" class="px-2">
-						<card-passport :ref="'passport'" :passport="pass"></card-passport>
+						<card-passport :passport="pass"></card-passport>
 					</div>
 				</div>
 			</div>
@@ -86,6 +88,7 @@
 			</div>
 		</section>
 		
+		<!-- APP MODAL FORM -->
 		<app-modal v-model:data="FORMPASSPORT" :url="$apiurl+'api/ppassport/create'" :success="successAddPassport">
 			<template #default="{form, error, reset}">
 			
@@ -117,6 +120,98 @@
 			</template>
 		</app-modal>
 				
+		<app-modal v-model:data="FORMRAPID" :url="$apiurl+'api/prapid/create'" :success="successAddRapid">
+			<template #default="{form, error, reset}">			
+				<h4><i class="feather-user"></i> Hasil Lab </h4>
+				{{form}}
+				<div class="m-0">
+					<div class="row gap one two-md">													
+						<v-text v-model="form.faskes" placeholder="Faskes"></v-text>
+						
+						<v-text v-model="form.dokter" placeholder="Nama Dokter (tanpa gelar)"></v-text>
+						
+						<v-date v-model="form.tanggaltes" placeholder="Tanggal Tes"></v-date>
+						
+						<v-select v-model="form.idjenistes" :url="$apiurl+'api/pjenistes/read'" placeholder="Jenis Tes" keyid="idjenistes" keyvalue="nama"></v-select>
+						
+						<v-file v-model="form.hasillab" placeholder="Foto Hasil Lab"></v-file>								
+						
+					</div>
+				</div>
+				<div class="">
+					<button class="secondary">Selanjutnya</button>
+				</div>
+			</template>
+		</app-modal>
+				
+		<app-modal v-model:data="FORMSCREENING" :url="$apiurl+'api/pscreening/create'" :success="fetchPassport">
+			<template #default="{form, error, data, reset}">
+			
+				<h4><i class="feather-user"></i> Screening Kondisi Saat ini </h4>
+<!--
+				{{form}}
+-->
+				<p>Centang pilihan dibawah ini sesuai dengan kondisi anda</p>
+				<div class="m-0">
+					<div class="row gap one two-md">													
+						<v-checkbox v-model="form.demam" placeholder="Demam"></v-checkbox>								
+						
+						<v-checkbox v-model="form.batukpilek" placeholder="Batuk Pilek"></v-checkbox>								
+						
+						<v-checkbox v-model="form.sesaknapas" placeholder="Sesak Napas"></v-checkbox>								
+						
+						<v-checkbox v-model="form.badanlemah" placeholder="Badan Lemah"></v-checkbox>								
+						
+						<v-checkbox v-model="form.diare" placeholder="Diare"></v-checkbox>
+													
+						<v-checkbox v-model="form.kejang" placeholder="Kejang"></v-checkbox>
+						
+						<v-checkbox v-model="form.kaku" placeholder="Kaku"></v-checkbox>
+						
+						<v-checkbox v-model="form.kakukuduk" placeholder="Kaku Kuduk"></v-checkbox>
+						
+						<v-checkbox v-model="form.matamerah" placeholder="Mata Merah"></v-checkbox>
+						
+						<v-checkbox v-model="form.matamenguning" placeholder="Mata Menguning"></v-checkbox>
+						
+						<v-checkbox v-model="form.kulitkemerahan" placeholder="Kulit Kemerahan"></v-checkbox>
+						
+						<v-checkbox v-model="data.checklainlain" placeholder="Lain lain"></v-checkbox>
+						
+						<v-text v-if="data.checklainlain" v-model="form.lainlain" placeholder="Sebutkan lain-lain"></v-text>
+						
+					</div>
+				</div>
+				<div class="">
+					<button class="secondary">Simpan</button>
+				</div>
+			</template>
+		</app-modal>
+		<!-- APP MODAL FORM -->
+		
+		
+		<!-- APP MODAL DELETE -->
+		<app-modal v-model:data="DELETEPASSPORT" :url="$apiurl+'api/ppassport'" method="delete" :success="fetchPassport">
+			<template #default="{form, error, reset}">
+				<h4><i class="feather-trash"></i> Delete</h4>
+				<p>
+					Menghapus data passport akan <b>menghapus seluruh data riwayat kesehatan dan perjalanan</b>, <br>
+					Apakah anda yakin ingin menghapus data ?
+				</p>
+				<p class="silver p-3">
+					Nama : {{form.nama}}<br>
+					Alamat : {{form.alamat}}<br>
+					Umur : {{form.umur}}<br>
+				</p>
+				<div class="">
+					<button class="error">Hapus</button>
+					<button @click.prevent="reset()" class="muted">Batal</button>
+				</div>
+			</template>
+		</app-modal>				
+		
+		<!-- APP MODAL DELETE -->
+		
 	</div>
 	<!-- [APP] End -->
 	
@@ -126,6 +221,11 @@
 			data(){
 				return {
 					FORMPASSPORT:{},
+					FORMRAPID:{},
+					FORMSCREENING:{},
+					
+					DELETEPASSPORT:{},
+					
 					PASSPORT:{
 						detail:[]
 					},
@@ -153,25 +253,15 @@
 						this.PASSPORT.detail = response.message.data;
 					})
 				},
-				successAddPassport(){				
-					http.post(this.$apiurl+'api/ppassport/read',{
-						body:this.setData({
-							start:0,
-							length:10
-						})
-					}).then(response=>{
-						console.log(response.message.data);
-						this.PASSPORT.detail = response.message.data;	
-						var newPassport = response.message.data.pop();
-						APP.$refs.passport.open('FORMRAPID',{idpassport:newPassport.idpassport});
-						//setTimeout(()=>{
-							//var index = APP.PASSPORT.detail.length;
-							//var child = APP.$refs['passport'+index];
-							//var newPassport = APP.PASSPORT.detail.pop();
-							//console.log(newPassport);
-							//child.openFormRapid({idpassport:newPassport.idpassport});
-						//},500);
-					})
+				successAddPassport(success){
+						APP.open('FORMRAPID',{idpassport:success.id});
+				},
+				successAddRapid(success,data){
+					// console.log(data);
+					APP.open('FORMSCREENING',{
+						idpassport:data.idpassport,
+						idrapid:success.id
+					});
 				},
 				fetchKunjungan(){
 					
@@ -184,13 +274,9 @@
 			props:['passport'],
 			data(){
 				return {
-					FORMRAPID:{},
-					FORMSCREENING:{},
 					DETAIL:{},
-					DELETE:{},
 					detailKesehatan:[],
-					detailLoading:false,
-					
+					detailLoading:false					
 				}
 			},
 			methods:{
@@ -208,9 +294,6 @@
 					}).finally(()=>{
 						this.detailLoading = false;
 					});
-				},
-				fetchPassport(){
-					APP.fetchPassport();
 				}
 			},
 			computed:{
@@ -239,10 +322,10 @@
 									<a @click.prevent="fetchDetailKesehatan(passport)">Detail</a>
 								</li> 
 								<li class="menu-item">
-									<a @click="open('FORM',passport)">Ubah</a>
+									<a @click="$root.open('FORMPASSPORT',passport)">Ubah</a>
 								</li> 
 								<li class="menu-item">
-									<a @click="open('DELETE',Object.assign(passport,{id:passport.idpassport}))">Hapus</a>
+									<a @click="$root.open('DELETEPASSPORT',Object.assign(passport,{id:passport.idpassport}))">Hapus</a>
 								</li> 
 							</ul> 
 						</div>
@@ -250,18 +333,24 @@
 							<p>
 								<b class="large mr-1">{{passport.nama}}</b>
 								
-								<button v-if="passport.status!='Valid'" class="label warning" @click="open('FORMRAPID',{idpassport:passport.idpassport})">Update Data</button>
-								<button v-if="passport.status!='Valid'" class="label warning" @click="open('FORMSCREENING',{idpassport:passport.idpassport})">Screening</button>
+								<button v-if="passport.status!='Valid'" class="label warning" @click="$root.open('FORMRAPID',{idpassport:passport.idpassport})">Update Data</button>
 								<button v-else class="label info" @click="fetchDetailKesehatan(passport)">Lihat detail</button>
 							</p>
-							<p class="m-0">Alamat : {{passport.alamat}}</p>
-							<p class="m-0">Status : {{passport.expired!=0?'Kadaluarsa':passport.status||'-'}}</p>
-							<p class="m-0">Expired : {{passport.tanggalexpired||'-'}}</p>
-							<p  class="m-0">Keterangan : {{!passport.keterangan?'Belum diupload':passport.expired==0?'Data sudah kadaluarsa':passport.keterangan}}</p>
+							<p class="m-0">
+								Alamat : {{passport.alamat}}
+							</p>
+							<p class="m-0">
+								Status : {{passport.expired!=0?'Kadaluarsa':passport.status||'-'}}
+							</p>
+							<p class="m-0">
+								Expired : {{passport.tanggalexpired||'-'}}
+							</p>
+							<p  class="m-0">
+								Keterangan : {{!passport.keterangan?'Belum diupload':passport.expired==0?'Data sudah kadaluarsa':passport.keterangan}}
+							</p>
 						</div>
 					</div>
 				</div>
-
 
 				<!-- [App Modal] Start -->
 				<app-modal v-model:data="DETAIL">
@@ -284,7 +373,7 @@
 								</div>
 							</div>
 						</div>
-						<button v-if="passport.status!='Valid'" type="button" class="warning" @click="open('FORMRAPID',{idpassport:passport.idpassport})">Update Hasil Lab</button>
+						<button v-if="passport.status!='Valid'" type="button" class="warning" @click="$root.open('FORMRAPID',{idpassport:passport.idpassport})">Update Hasil Lab</button>
 						<br>
 						<h5><i class="feather-shield"></i> Riwayat Kesehatan</h5>
 						<div class="overflow-x">
@@ -320,100 +409,6 @@
 						<br>
 					</template>
 				</app-modal>
-				
-				<app-modal v-model:data="FORMRAPID" :url="$apiurl+'api/prapid/create'" :success="fetchPassport">
-					<template #default="{form, error, reset}">
-					
-						<h4><i class="feather-user"></i> Hasil Lab </h4>
-<!--
-						{{form}}
--->
-						<div class="m-0">
-							<div class="row gap one two-md">													
-								<v-text v-model="form.faskes" placeholder="Faskes"></v-text>
-								
-								<v-text v-model="form.dokter" placeholder="Nama Dokter (tanpa gelar)"></v-text>
-								
-								<v-date v-model="form.tanggaltes" placeholder="Tanggal Tes"></v-date>
-								
-								<v-select v-model="form.idjenistes" :url="$apiurl+'api/pjenistes/read'" placeholder="Jenis Tes" keyid="idjenistes" keyvalue="nama"></v-select>
-								
-								<v-file v-model="form.hasillab" placeholder="Foto Hasil Lab"></v-file>								
-								
-							</div>
-						</div>
-						<div class="">
-							<button class="secondary">Selanjutnya</button>
-						</div>
-					</template>
-				</app-modal>
-				
-				<app-modal v-model:data="FORMSCREENING" :url="$apiurl+'api/pscreening/create'" :success="fetchPassport">
-					<template #default="{form, error, data, reset}">
-					
-						<h4><i class="feather-user"></i> Screening </h4>
-<!--
-						{{form}}
--->
-						<div class="m-0">
-							<div class="row gap one two-md">													
-								<v-checkbox v-model="form.demam" placeholder="Demam"></v-checkbox>								
-								
-								<v-checkbox v-model="form.batukpilek" placeholder="Batuk Pilek"></v-checkbox>								
-								
-								<v-checkbox v-model="form.sesaknapas" placeholder="Sesak Napas"></v-checkbox>								
-								
-								<v-checkbox v-model="form.badanlemah" placeholder="Badan Lemah"></v-checkbox>								
-								
-								<v-checkbox v-model="form.diare" placeholder="Diare"></v-checkbox>
-															
-								<v-checkbox v-model="form.kejang" placeholder="Kejang"></v-checkbox>
-								
-								<v-checkbox v-model="form.kaku" placeholder="Kaku"></v-checkbox>
-								
-								<v-checkbox v-model="form.kakukuduk" placeholder="Kaku Kuduk"></v-checkbox>
-								
-								<v-checkbox v-model="form.matamerah" placeholder="Mata Merah"></v-checkbox>
-								
-								<v-checkbox v-model="form.matamenguning" placeholder="Mata Menguning"></v-checkbox>
-								
-								<v-checkbox v-model="form.kulitkemerahan" placeholder="Kulit Kemerahan"></v-checkbox>
-								
-								<v-checkbox v-model="data.checklainlain" placeholder="Lain lain"></v-checkbox>
-								
-								<v-text v-if="data.checklainlain" v-model="form.lainlain" placeholder="Sebutkan lain-lain"></v-text>
-								
-							</div>
-						</div>
-						<div class="">
-							<button class="secondary">Simpan</button>
-						</div>
-					</template>
-				</app-modal>
-							
-				<app-modal v-model:data="DELETE" :url="$apiurl+'api/ppassport'" method="delete" :success="fetchPassport">
-					<template #default="{form, error, reset}">
-						<h4><i class="feather-trash"></i> Delete</h4>
-						<p>
-							Menghapus data passport akan <b>menghapus seluruh data riwayat kesehatan dan perjalanan</b>, <br>
-							Apakah anda yakin ingin menghapus data ?
-						</p>
-						<p class="silver p-3">
-							Nama : {{form.nama}}<br>
-							Alamat : {{form.alamat}}<br>
-							Umur : {{form.umur}}<br>
-						</p>
-		<!--
-						<pre class="small" v-text="JSON.stringify(form,null,2)"></pre>
-		-->
-						<div class="">
-							<button class="error">Hapus</button>
-							<button @click.prevent="reset()" class="muted">Batal</button>
-						</div>
-					</template>
-				</app-modal>
-				
-				
 				<!-- [App Modal] End -->
 				
 			`

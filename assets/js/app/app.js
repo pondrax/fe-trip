@@ -74,11 +74,12 @@ app.mixin({
 				body : body,
 				method :method
 			}).then(response=>{
-				APP.$refs.LOADER.add(response.message, 'success', -1);
-                APP.$refs.LOADER.clear(3000);
-                this.reset();
+				this.reset();
                 if(!!success){
-					success(response);
+					success(response,data);
+				}else{
+					APP.$refs.LOADER.add(response.message, 'success', -1);
+					APP.$refs.LOADER.clear(3000);
 				}
 			}).catch(error=>{
 				if(fail){

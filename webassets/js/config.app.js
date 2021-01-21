@@ -4,7 +4,7 @@ const config = {
 	$name		: 'Travel Passport',
 	$apiurl		: 'http://localhost/travpas/public/',
 	$baseurl	: 'http://localhost/fe-trip/',
-	$apikey		: 'asdasdasdhkj23askdjklqlwkoououasdkhklha-fe',
+	$apikey		: 'asdasdasdhkj23askdjklqlwkoououasdkhklha-feapp',
 	$menu		: {}
 };
 

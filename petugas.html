@@ -46,9 +46,10 @@
 			</div>
 		</div>
 	
-		<app-modal v-model:data="HASILSCAN">
+		<app-modal v-model:data="HASILSCAN" :url="$apiurl+'/api/pkunjungan/create'" :success="successAddVisitor">
 			<template #default="{form, error, reset}">
 				<h4><i class="feather-maximize"></i> Hasil Scan</h4>
+				{{form}}
 				<p class="silver p-3">
 					Nama : {{form.nama}}<br>
 					Alamat : {{form.alamat}}<br>
@@ -93,8 +94,8 @@
 						})
 					}).then(r=>{
 						console.log(r);
+						this.open('HASILSCAN',r);
 					});
-					this.open('HASILSCAN');
 				},
 				successAddVisitor(success){
 					this.scanStart();
@@ -107,11 +108,12 @@
 				}
 			}
 		});
+		const LOGGED = true;
 	</script>
 	
 	<!-- [SCRIPT] Start -->
 	<div id="app-script">
-		<script src="webassets/js/config.js"></script>
+		<script src="webassets/js/config.app.js"></script>
 		<script src="webassets/js/app/base.js"></script>
 		<script src="webassets/js/app/form.js"></script>
 		<script src="webassets/js/app/table.js"></script>

@@ -92,21 +92,21 @@ app.component('v-datetime', {
 app.component('v-checkbox', {
 	name: 'VCheckbox',
 	inheritAttrs: false,
-	props: ['label', 'modelValue', 'error','options'],
+	props: ['label', 'modelValue', 'error','options','placeholder'],
 	emits: ['update:modelValue'],
 	template: `
-		<div>
+		<div class="pl-0">
 			<label class="block">
 			  {{ label||$attrs.placeholder }} 
 			  <span v-if="$attrs.required==''" class="text-error">{{ '*' }}</span>
 			  <input
 				v-bind="$attrs"
 				type="checkbox"
-				:value="modelValue||'#000000'"
+				:value="modelValue"
 				:style="error&&'border-color:#ff6f61'"
-				@input="$emit('update:modelValue', $event.target.value)"
+				@input="$emit('update:modelValue', $event.target.checked?1:0)"
 			  >
-			<span class="checkable ml-2">{{options[modelValue||0]}}</span>
+			<span class="checkable ml-2">{{placeholder}}</span>
 			</label>
 			<small class="text-error">{{ error }}</small>
 		</div>

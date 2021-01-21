@@ -185,6 +185,7 @@
 			data(){
 				return {
 					FORMRAPID:{},
+					FORMSCREENING:{},
 					DETAIL:{},
 					DELETE:{},
 					detailKesehatan:[],
@@ -193,9 +194,6 @@
 				}
 			},
 			methods:{
-				openFormRapid(){
-					console.log('rapid');
-				},
 				fetchDetailKesehatan(passport){
 					this.open('DETAIL',passport);
 					this.detailLoading = true;
@@ -253,6 +251,7 @@
 								<b class="large mr-1">{{passport.nama}}</b>
 								
 								<button v-if="passport.status!='Valid'" class="label warning" @click="open('FORMRAPID',{idpassport:passport.idpassport})">Update Data</button>
+								<button v-if="passport.status!='Valid'" class="label warning" @click="open('FORMSCREENING',{idpassport:passport.idpassport})">Screening</button>
 								<button v-else class="label info" @click="fetchDetailKesehatan(passport)">Lihat detail</button>
 							</p>
 							<p class="m-0">Alamat : {{passport.alamat}}</p>
@@ -326,7 +325,9 @@
 					<template #default="{form, error, reset}">
 					
 						<h4><i class="feather-user"></i> Hasil Lab </h4>
+<!--
 						{{form}}
+-->
 						<div class="m-0">
 							<div class="row gap one two-md">													
 								<v-text v-model="form.faskes" placeholder="Faskes"></v-text>
@@ -347,7 +348,49 @@
 					</template>
 				</app-modal>
 				
-				
+				<app-modal v-model:data="FORMSCREENING" :url="$apiurl+'api/pscreening/create'" :success="fetchPassport">
+					<template #default="{form, error, data, reset}">
+					
+						<h4><i class="feather-user"></i> Screening </h4>
+<!--
+						{{form}}
+-->
+						<div class="m-0">
+							<div class="row gap one two-md">													
+								<v-checkbox v-model="form.demam" placeholder="Demam"></v-checkbox>								
+								
+								<v-checkbox v-model="form.batukpilek" placeholder="Batuk Pilek"></v-checkbox>								
+								
+								<v-checkbox v-model="form.sesaknapas" placeholder="Sesak Napas"></v-checkbox>								
+								
+								<v-checkbox v-model="form.badanlemah" placeholder="Badan Lemah"></v-checkbox>								
+								
+								<v-checkbox v-model="form.diare" placeholder="Diare"></v-checkbox>
+															
+								<v-checkbox v-model="form.kejang" placeholder="Kejang"></v-checkbox>
+								
+								<v-checkbox v-model="form.kaku" placeholder="Kaku"></v-checkbox>
+								
+								<v-checkbox v-model="form.kakukuduk" placeholder="Kaku Kuduk"></v-checkbox>
+								
+								<v-checkbox v-model="form.matamerah" placeholder="Mata Merah"></v-checkbox>
+								
+								<v-checkbox v-model="form.matamenguning" placeholder="Mata Menguning"></v-checkbox>
+								
+								<v-checkbox v-model="form.kulitkemerahan" placeholder="Kulit Kemerahan"></v-checkbox>
+								
+								<v-checkbox v-model="data.checklainlain" placeholder="Lain lain"></v-checkbox>
+								
+								<v-text v-if="data.checklainlain" v-model="form.lainlain" placeholder="Sebutkan lain-lain"></v-text>
+								
+							</div>
+						</div>
+						<div class="">
+							<button class="secondary">Simpan</button>
+						</div>
+					</template>
+				</app-modal>
+							
 				<app-modal v-model:data="DELETE" :url="$apiurl+'api/ppassport'" method="delete" :success="fetchPassport">
 					<template #default="{form, error, reset}">
 						<h4><i class="feather-trash"></i> Delete</h4>

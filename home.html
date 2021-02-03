@@ -94,7 +94,9 @@
 			
 				<h4><i class="feather-user"></i> Passport Baru</h4>
 				<div class="m-0">
+<!--
 					{{form}}
+-->
 					<div class="row gap one two-md">													
 						<v-text v-model="form.nik" placeholder="NIK"></v-text>
 						
@@ -123,7 +125,9 @@
 		<app-modal v-model:data="FORMRAPID" :url="$apiurl+'api/prapid/create'" :success="successAddRapid">
 			<template #default="{form, error, reset}">			
 				<h4><i class="feather-user"></i> Hasil Lab </h4>
+<!--
 				{{form}}
+-->
 				<div class="m-0">
 					<div class="row gap one two-md">													
 						<v-text v-model="form.faskes" placeholder="Faskes"></v-text>
